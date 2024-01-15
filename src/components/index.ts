@@ -1,0 +1,1 @@
+export { default as JSONForm } from "@/components/JSONForm.vue"
