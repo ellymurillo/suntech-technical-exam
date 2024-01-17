@@ -5,40 +5,40 @@
     </template>
 
     <div class="text-left">
-      <v-row>
+      <v-row class="name-detail-container">
         <v-col>
           <label class="font-weight-bold">Name: </label>
           <span>{{ `${getFirstName || ""} ${getLastName || ""}` }}</span>
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row class="birthday-detail-container">
         <v-col>
           <label class="font-weight-bold">Birthday: </label>
           <span>{{ formatDate(getBirthday) || "" }}</span>
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row class="email-detail-container">
         <v-col>
           <label class="font-weight-bold">Email: </label>
           <span>{{ getEmail || "" }}</span>
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row class="age-detail-container">
         <v-col>
           <label class="font-weight-bold">Age: </label>
           <span>{{ getAge || "" }}</span>
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row class="otherinfo-detail-container">
         <v-col>
           <label class="font-weight-bold">Other Info: </label>
           <div
             class="info-container"
-            v-html="`${formatString(getOtherInfo)}`"
+            v-html="`${renderWithBreaks(getOtherInfo)}`"
           ></div>
         </v-col>
       </v-row>
@@ -47,13 +47,15 @@
     <v-row class="text-right mt-5">
       <v-col>
         <v-btn
-          class="mr-2"
+          class="mr-2 edit-btn"
           @click="router.push('/edit')"
           flat
           :disabled="disableEdit"
           >Edit</v-btn
         >
-        <v-btn color="primary" @click="onNewEntry">New Entry</v-btn>
+        <v-btn color="primary" class="newentry-btn" @click="onNewEntry"
+          >New Entry</v-btn
+        >
       </v-col>
     </v-row>
   </v-card>
@@ -61,9 +63,10 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import moment from "moment";
 
 import stores from "@/stores";
+
+import { renderWithBreaks, formatDate } from "@/composables";
 
 const {
   getFirstName,
@@ -82,17 +85,9 @@ const disableEdit =
   !getBirthday.value ||
   !getEmail.value;
 
-const formatString = (value: string | undefined) => {
-  return value ? value.replace(/(\r\n|\r|\n)/g, "<br />") : "";
-};
-
 const onNewEntry = () => {
   $reset();
   router.push("/");
-};
-
-const formatDate = (date: string | undefined) => {
-  return date ? moment(date).format("MM/DD/YYYY") : "";
 };
 </script>
 

@@ -1,5 +1,6 @@
 <template>
   <v-textarea
+    :testId="formatTestId(control.label)"
     type="textarea"
     variant="outlined"
     :label="control.label"
@@ -20,7 +21,12 @@
       v-slot:details
       v-if="hasError({ data: control.data, errors: control.errors })"
     >
-      {{ control.errors }}
+      <span
+        class="text-red-accent-3"
+        :testId="formatTestId(`${control.label} error`)"
+      >
+        {{ control.errors }}
+      </span>
     </template>
   </v-textarea>
 </template>
@@ -30,6 +36,8 @@ import { ControlElement } from "@jsonforms/core";
 import { rendererProps, useJsonFormsControl } from "@jsonforms/vue";
 import { defineComponent, markRaw } from "vue";
 import { toPlainObject } from "lodash";
+
+import { strToCamelCase } from "@/composables";
 
 const controlRenderer = defineComponent({
   name: "TextAreaControlRender",
@@ -51,6 +59,9 @@ const controlRenderer = defineComponent({
     },
     getTabIndex() {
       return toPlainObject(this.control.uischema)?.tabIndex || 0;
+    },
+    formatTestId(value: string | undefined) {
+      return strToCamelCase(value);
     },
   },
 });

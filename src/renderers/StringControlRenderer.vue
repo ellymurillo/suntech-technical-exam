@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    :testId="formatTestId(control.label)"
     v-if="control.visible"
     variant="outlined"
     :label="`${control.label}${control.required ? ' *' : ''}`"
@@ -25,7 +26,10 @@
         })
       "
     >
-      <span class="text-red-accent-3">
+      <span
+        class="text-red-accent-3"
+        :testId="formatTestId(`${control.label} error`)"
+      >
         {{ control.errors }}
       </span>
     </template>
@@ -37,6 +41,8 @@ import { ControlElement } from "@jsonforms/core";
 import { defineComponent, markRaw } from "vue";
 import { rendererProps, useJsonFormsControl } from "@jsonforms/vue";
 import { toPlainObject } from "lodash";
+
+import { strToCamelCase } from "@/composables";
 
 const controlRenderer = defineComponent({
   name: "StringControlRenderer",
@@ -58,6 +64,9 @@ const controlRenderer = defineComponent({
     },
     getTabIndex() {
       return toPlainObject(this.control.uischema)?.tabIndex || 0;
+    },
+    formatTestId(value: string | undefined) {
+      return strToCamelCase(value);
     },
   },
 });

@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    :testId="formatTestId(control.label)"
     type="date"
     variant="outlined"
     :label="`${control.label}${control.required ? ' *' : ''}`"
@@ -20,7 +21,10 @@
       v-slot:details
       v-if="hasError({ data: control.data, errors: control.errors })"
     >
-      <span class="text-red-accent-3">
+      <span
+        class="text-red-accent-3"
+        :testId="formatTestId(`${control.label} error`)"
+      >
         {{ control.errors }}
       </span>
     </template>
@@ -32,6 +36,8 @@ import { ControlElement } from "@jsonforms/core";
 import { rendererProps, useJsonFormsControl } from "@jsonforms/vue";
 import { defineComponent, markRaw } from "vue";
 import { toPlainObject } from "lodash";
+
+import { strToCamelCase } from "@/composables";
 
 const controlRenderer = defineComponent({
   name: "DateControlRenderer",
@@ -53,6 +59,9 @@ const controlRenderer = defineComponent({
     },
     getTabIndex() {
       return toPlainObject(this.control.uischema)?.tabIndex || 0;
+    },
+    formatTestId(value: string | undefined) {
+      return strToCamelCase(value);
     },
   },
 });

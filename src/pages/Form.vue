@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import moment from "moment";
 import { ref } from "vue";
-import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 import store from "@/stores";
 
@@ -29,6 +29,8 @@ import Schema from "@/schemas/Schema";
 import UISchema from "@/schemas/UISchema";
 
 import { formValidator, emitter } from "@/composables";
+import { onBeforeUnmount } from "vue";
+import { onMounted } from "vue";
 
 const {
   setFirstName,
@@ -65,7 +67,7 @@ const formData = ref<Person>({
   otherInfo: getOtherInfo.value || "",
 });
 
-const isEdit = currentRoute.name === "edit";
+const isEdit = currentRoute?.name === "edit";
 
 const onChange = (value: any) => {
   data.value = value;
@@ -88,18 +90,20 @@ formValidator(
   ({ min, max }, age) => calculateAge(age) >= min && calculateAge(age) <= max
 );
 
-emitter.on("onSubmit", () => {
-  setFirstName(formData.value.firstName || "");
-  setLastName(formData.value.lastName || "");
-  setEmail(formData.value.email || "");
-  setBirthday(formData.value.birthday || "");
-  setAge(formData.value.age || 0);
-  setOtherInfo(formData.value.otherInfo || "");
+onMounted(() => {
+  emitter.on("onSubmit", () => {
+    setFirstName(formData.value.firstName || "");
+    setLastName(formData.value.lastName || "");
+    setEmail(formData.value.email || "");
+    setBirthday(formData.value.birthday || "");
+    setAge(formData.value.age || 0);
+    setOtherInfo(formData.value.otherInfo || "");
 
-  router.push("/details");
+    router.push("/details");
+  });
 });
 
-onBeforeRouteLeave(() => {
+onBeforeUnmount(() => {
   emitter.all.clear();
 });
 </script>
