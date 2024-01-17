@@ -13,6 +13,14 @@ npm install
 
 npm run dev
 
+## Run unit tests
+
+npm run test
+
+## Run e2e tests
+
+npm run test:e2e
+
 ## Build
 
 npm run build
